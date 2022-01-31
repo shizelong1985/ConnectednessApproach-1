@@ -6,9 +6,9 @@
 #' @param corrected Should corrected TCI or normal TCI be used
 #' @return Get connectedness measures
 #' @examples
-#' #Replication of Gabauer and Gupta (2019)
-#' #data("gg2019")
-#' #dca = ConnectednessApproach(gg2019, model="TVP-VAR",
+#' #Replication of Gabauer and Gupta (2018)
+#' #data("gg2018")
+#' #dca = ConnectednessApproach(gg2018, model="TVP-VAR",
 #' #                             connectedness="Time",
 #' #                            nlag=1, nfore=10, window.size=200,
 #' #                             VAR_config=list(TVPVAR=list(kappa1=0.99, kappa2=0.99,
@@ -37,28 +37,28 @@ ConnectednessPartial = function(dca, group=c(1,2), corrected=TRUE) {
     CT_[i,,] = ct[i,,]*0
   }
 
-  TOTAL = cTOTAL = array(NA, c(t,1), dimnames=list(as.character(date), "TCI"))
+  TCI = cTCI = array(NA, c(t,1), dimnames=list(as.character(date), "TCI"))
   NPDC = NET = FROM = TO = array(NA, c(t, k), dimnames=list(date, NAMES))
   for (i in 1:t) {
     dca = ConnectednessTable(CT[,,i])
-    TOTAL[i,] = dca$TOTAL
-    cTOTAL[i,] = dca$cTOTAL
+    TCI[i,] = dca$TCI
+    cTCI[i,] = dca$cTCI
     TO[i,] = dca$TO
     FROM[i,] = dca$FROM
     NET[i,] = dca$NET
   }
 
-  TOTAL_ = cTOTAL_ = array(NA, c(t,1), dimnames=list(as.character(date), "TCI"))
+  TCI_ = cTCI_ = array(NA, c(t,1), dimnames=list(as.character(date), "TCI"))
   NPDCv = NET_ = FROM_ = TO_ = array(NA, c(t, k), dimnames=list(date, NAMES))
   for (i in 1:t) {
     dca = ConnectednessTable(CT_[,,i])
-    TOTAL_[i,] = dca$TOTAL
-    cTOTAL_[i,] = dca$cTOTAL
+    TCIL_[i,] = dca$TCI
+    cTCI_[i,] = dca$cTCI
     TO_[i,] = dca$TO
     FROM_[i,] = dca$FROM
     NET_[i,] = dca$NET
   }
 
-  return = list(TOTAL=TOTAL, cTOTAL=cTOTAL, NET=NET, TO=TO, FROM=FROM,
-                TOTAL_=TOTAL_, cTOTAL_=cTOTAL_, NET_=NET_, TO_=TO_, FROM_=FROM_)
+  return = list(TCI=TCI, cTCI=cTCI, NET=NET, TO=TO, FROM=FROM,
+                TCIL_=TCI_, cTCI_=cTCI_, NET_=NET_, TO_=TO_, FROM_=FROM_)
 }

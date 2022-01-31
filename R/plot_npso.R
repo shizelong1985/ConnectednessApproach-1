@@ -3,12 +3,11 @@
 #' @param ca Connectedness object
 #' @param col Color
 #' @param save Save plot as pdf
-#' @param lower Lower limit
-#' @param upper Upper limit
+#' @param ylim A vector including the lower and upper limit of the y-axis
 #' @param ... Arguments to be passed to methods, such as graphical parameters (see par).
 #' @return Return connectedness plot
 #' @export
-plot_npso = function(ca, col="steelblue4", save=FALSE, lower=NULL, upper=NULL, ...) {
+plot_npso = function(ca, col="steelblue4", save=FALSE, ylim=c(NULL, NULL), ...) {
   if (!dir.exists('./Results')){
     dir.create('./Results')
   }
@@ -20,13 +19,13 @@ plot_npso = function(ca, col="steelblue4", save=FALSE, lower=NULL, upper=NULL, .
   if (is.null(NAMES)) {
     NAMES = 1:k
   }
-  if (is.null(lower)) {
+  if (is.null(ylim[0])) {
     lower = min(x)
   }
-  if (is.null(upper)) {
+  if (is.null(ylim[1])) {
     upper = max(x)
   }
-
+  
   kk = k*(k-1)/2
   k_row = ceiling(sqrt(kk))
   k_col = ceiling(kk/k_row)
@@ -35,7 +34,7 @@ plot_npso = function(ca, col="steelblue4", save=FALSE, lower=NULL, upper=NULL, .
   for (j in 1:k) {
     for (i in 1:k) {
       if (i>j) {
-        zoo::plot.zoo(date, x[i,j,], type="l", main=paste(NAMES[j],"-",NAMES[i]), las=1, xlab="", ylab="", xaxs="i", yaxs="i", tck=-0.02, ylim=c(lower,upper), ...)
+        plot(date, x[i,j,], type="l", main=paste(NAMES[j],"-",NAMES[i]), las=1, xlab="", ylab="", xaxs="i", yaxs="i", tck=-0.02, ylim=c(lower,upper), ...)
         grid(NA, NULL, lty=2)
         polygon(c(date,rev(date)),c(c(rep(0,t)),rev(x[i,j,])),col=col, border=col)
         abline(h=0, lty=3)

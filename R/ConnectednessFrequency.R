@@ -52,7 +52,7 @@ FrequencyConnectedness = function(Phi, Sigma, nfore, partition, generalized=TRUE
   new_p = getPartition(partition, nfore)
   range = sort(unique(do.call(c, new_p)))
 
-  TOTAL = cTOTAL = array(NA, c(t,interval,2), dimnames=list(as.character(date), period_names, scenarios))
+  TCI = cTCI = array(NA, c(t,interval,2), dimnames=list(as.character(date), period_names, scenarios))
   NPDC = array(NA, c(t, k, interval), dimnames=list(date, NAMES, period_names))
   NET = FROM = TO = array(NA, c(t, k, interval, 2), dimnames=list(date, NAMES, period_names, scenarios))
   FEVD = NPSO = array(NA, c(k, k, t, interval, 2), dimnames=list(NAMES, NAMES, date, period_names, scenarios))
@@ -71,8 +71,8 @@ FrequencyConnectedness = function(Phi, Sigma, nfore, partition, generalized=TRUE
       TO[i,,j,1] = dca$TO
       FROM[i,,j,1] = dca$FROM
       NET[i,,j,1] = dca$NET
-      TOTAL[i,j,1] = dca$TOTAL
-      cTOTAL[i,j,1] = dca$cTOTAL
+      TCI[i,j,1] = dca$TCI
+      cTCI[i,j,1] = dca$cTCI
       NPSO[,,i,j,1] = dca$NPSO
 
       dca = ConnectednessTable(tables[[j]]/sum(sum(tables[[j]]))*k)
@@ -80,8 +80,8 @@ FrequencyConnectedness = function(Phi, Sigma, nfore, partition, generalized=TRUE
       TO[i,,j,2] = dca$TO
       FROM[i,,j,2] = dca$FROM
       NET[i,,j,2] = dca$NET
-      TOTAL[i,j,2] = dca$TOTAL
-      cTOTAL[i,j,2] = dca$cTOTAL
+      TCI[i,j,2] = dca$TCI
+      cTCI[i,j,2] = dca$cTCI
       NPSO[,,i,j,2] = dca$NPSO
 
       PCI[,,i,j] = dca$PCI
@@ -96,6 +96,6 @@ FrequencyConnectedness = function(Phi, Sigma, nfore, partition, generalized=TRUE
     TABLE[,,i,1] = ConnectednessTable(apply(FEVD[,,,i,1], c(1,2), mean)/100)$TABLE
     TABLE[,,i,2] = ConnectednessTable(apply(FEVD[,,,i,2], c(1,2), mean)/100)$TABLE
   }
-  return = list(TABLE=TABLE, FEVD=FEVD, TOTAL=TOTAL, cTOTAL=cTOTAL, TO=TO, FROM=FROM,
-                NET=NET, NPDC=NPDC, NPSO=NPSO, PCI=PCI, INFLUENCE=INFLUENCE)
+  return = list(TABLE=TABLE, FEVD=FEVD, TCI=TCI, cTCI=cTCI, TO=TO, FROM=FROM,
+                NET=NET, NPDC=NPDC, NPSO=NPSO, PCI=PCI, INFLUENCE=INFLUENCE, approach="Frequency")
 }

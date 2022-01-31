@@ -6,9 +6,9 @@
 #' @param corrected Should corrected TCI or normal TCI be used
 #' @return Get connectedness measures
 #' @examples
-#' #Replication of Gabauer and Gupta (2019)
-#' #data("gg2019")
-#' #dca = ConnectednessApproach(gg2019, model="TVP-VAR",
+#' #Replication of Gabauer and Gupta (2018)
+#' #data("gg2018")
+#' #dca = ConnectednessApproach(gg2018, model="TVP-VAR",
 #' #                             connectedness="Time",
 #' #                            nlag=1, nfore=10, window.size=200,
 #' #                             VAR_config=list(TVPVAR=list(kappa1=0.99, kappa2=0.99,
@@ -43,13 +43,13 @@ ConnectednessAggregate = function(dca, groups=list(c(1), c(2:k)), corrected=TRUE
     }
   }
 
-  TOTAL_group = cTOTAL_group = array(NA, c(t,1), dimnames=list(as.character(date), "TCI"))
+  TCI_group = cTCI_group = array(NA, c(t,1), dimnames=list(as.character(date), "TCI"))
   NPDC_group = NET_group = FROM_group = TO_group = array(NA, c(t, m), dimnames=list(date, NAMES_group))
   PCI_group = NPSO_group = INFLUENCE_group = array(NA, c(m, m, t), dimnames=list(NAMES_group, NAMES_group, date))
   for (i in 1:t) {
     dca = ConnectednessTable(CT_group[,,i])
-    TOTAL_group[i,] = dca$TOTAL
-    cTOTAL_group[i,] = dca$cTOTAL
+    TCI_group[i,] = dca$TCI
+    cTCI_group[i,] = dca$cTCI
     TO_group[i,] = dca$TO
     FROM_group[i,] = dca$FROM
     NET_group[i,] = dca$NET
@@ -58,9 +58,9 @@ ConnectednessAggregate = function(dca, groups=list(c(1), c(2:k)), corrected=TRUE
     NPSO_group[,,i] = dca$NPSO
     INFLUENCE_group[,,i] = dca$INFLUENCE
   }
-  cTOTAL_inter = cTOTAL_group*k/(k-1)*((m-1)/m)
-  TOTAL_inter = TOTAL_group*k/(k-1)*((m-1)/m)
-  return = list(CT_group=CT_group, TOTAL_group=TOTAL_group, cTOTAL_group=cTOTAL_group, NET_group=NET_group, TO_group=TO_group, FROM_group=FROM_group,
+  cTCI_inter = cTCI_group*k/(k-1)*((m-1)/m)
+  TCI_inter = TCI_group*k/(k-1)*((m-1)/m)
+  return = list(CT_group=CT_group, TCI_group=TCI_group, cTCI_group=cTCI_group, NET_group=NET_group, TO_group=TO_group, FROM_group=FROM_group,
                 NPDC_group=NPDC_group, NPSO_group=NPSO_group, PCI_group=PCI_group, INFLUENCE_group=INFLUENCE_group,
-                cTOTAL_inter=cTOTAL_inter, TOTAL_inter=TOTAL_inter)
+                cTCI_inter=cTCI_inter, TCI_inter=TCI_inter, approach="Aggregate")
 }

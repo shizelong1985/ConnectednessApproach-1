@@ -78,25 +78,26 @@ VFEVD = function(fit, nfore=100, standardize=FALSE) {
   for (i in 1:t) {
     VIRF[,,i,] = H.hat.shock[,,i,] - H.hat.no_shock[,,i,]
   }
-  VFEVD = array(NA, c(k,k,t))
-  rownames(VFEVD)=colnames(VFEVD)=NAMES
+  date = dimnames(H)[[3]]
+  VFEVD = array(NA, c(k,k,t), dimnames=list(NAMES,NAMES,date))
   for (i in 1:t) {
     num = apply(VIRF[,,i,]^2,1:2,sum)
     den = c(apply(num,1,sum))
     fevd = t(num)/den
     VFEVD[,,i] = (fevd/apply(fevd, 1, sum))
   }
-  TOTAL = array(NA, c(t,1))
-  NPSO = array(NA, c(k,k,t))
-  TO = FROM = NET = array(NA, c(t,k))
+  cTCI = TCI = array(NA, c(t,1),dimnames=list(date,"TCI"))
+  NPSO = array(NA, c(k,k,t),dimnames=list(NAMES,NAMES,date))
+  TO = FROM = NET = array(NA, c(t,k),dimnames=list(date,NAMES))
   for (i in 1:t) {
     dca = ConnectednessTable(VFEVD[,,i])
     NET[i,] = dca$NET
     TO[i,] = dca$TO
     FROM[i,] = dca$FROM
     NPSO[,,i] = dca$NPSO
-    TOTAL[i,] = dca$cTOTAL
+    TCI[i,] = dca$TCI
+    cTCI[i,] = dca$cTCI
   }
   TABLE = ConnectednessTable(VFEVD)$TABLE
-  return = list(TABLE=TABLE, FEVD=VFEVD, IRF=VIRF, TOTAL=TOTAL, NET=NET, TO=TO, FROM=FROM)
+  return = list(TABLE=TABLE, FEVD=VFEVD, IRF=VIRF, cTCI=cTCI, TCI=TCI, NET=NET, TO=TO, FROM=FROM)
 }

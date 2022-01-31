@@ -6,9 +6,9 @@
 #' @param corrected Should corrected TCI or normal TCI be used
 #' @return Get connectedness measures
 #' @examples
-#' #Replication of Gabauer and Gupta (2019)
-#' #data("gg2019")
-#' #dca = ConnectednessApproach(gg2019, model="TVP-VAR",
+#' #Replication of Gabauer and Gupta (2018)
+#' #data("gg2018")
+#' #dca = ConnectednessApproach(gg2018, model="TVP-VAR",
 #' #                             connectedness="Time",
 #' #                            nlag=1, nfore=10, window.size=200,
 #' #                             VAR_config=list(TVPVAR=list(kappa1=0.99, kappa2=0.99,
@@ -56,7 +56,7 @@ ConnectednessDecompose = function(dca, groups=list(c(1), c(2:k)), corrected=TRUE
     }
   }
 
-  TOTAL_wo = array(NA, c(t, 1), dimnames=list(date, "TCI"))
+  TCI_wo = array(NA, c(t, 1), dimnames=list(date, "TCI"))
   NPSO_wo = array(NA, c(k, k, t), dimnames=list(NAMES,NAMES,date))
   TO_wo = FROM_wo = NET_wo = array(NA, c(t, k), dimnames=list(date, NAMES))
   for (i in 1:t) {
@@ -65,15 +65,15 @@ ConnectednessDecompose = function(dca, groups=list(c(1), c(2:k)), corrected=TRUE
     FROM_wo[i,] = dca_$FROM
     NET_wo[i,] = dca_$NET
     NPSO_wo[,,i] = dca_$NPSO
-    TOTAL_wo[i,] = dca_$TOTAL * k/denominator
+    TCI_wo[i,] = dca_$TCI * k/denominator
   }
 
-  TOTAL_group = array(NA, c(t,m), dimnames=list(date, NAMES_group))
+  TCI_group = array(NA, c(t,m), dimnames=list(date, NAMES_group))
   for (i in 1:m) {
     group = groups[i][[1]]
-    TOTAL_group[,i] = rowSums(TO_wo[,group,drop=FALSE])/denominator
+    TCI_group[,i] = rowSums(TO_wo[,group,drop=FALSE])/denominator
   }
-  TOTAL_inter = array(NA, c(t,1), dimnames=list(date,"TCI_inter"))
-  TOTAL_inter[,1] = apply(ct_inter,3,sum)/denominator
-  return = list(TOTAL_group=TOTAL_group, TOTAL_inter=TOTAL_inter, TOTAL_wo=TOTAL_wo, TO_wo=TO_wo, FROM_wo=FROM_wo, NET_wo=NET_wo)
+  TCI_inter = array(NA, c(t,1), dimnames=list(date,"TCI_inter"))
+  TCI_inter[,1] = apply(ct_inter,3,sum)/denominator
+  return = list(TCI_group=TCI_group, TCI_inter=TCI_inter, TCI_wo=TCI_wo, TO_wo=TO_wo, FROM_wo=FROM_wo, NET_wo=NET_wo, approach="Decompose")
 }

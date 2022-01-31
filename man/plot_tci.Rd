@@ -4,7 +4,7 @@
 \alias{plot_tci}
 \title{Dynamic total connectedness plot}
 \usage{
-plot_tci(ca, col = "steelblue4", save = FALSE, lower = NULL, upper = NULL, ...)
+plot_tci(ca, col = "steelblue4", save = FALSE, ylim = c(NULL, NULL), ...)
 }
 \arguments{
 \item{ca}{Connectedness object}
@@ -13,9 +13,7 @@ plot_tci(ca, col = "steelblue4", save = FALSE, lower = NULL, upper = NULL, ...)
 
 \item{save}{Save plot as pdf}
 
-\item{lower}{Lower limit}
-
-\item{upper}{Upper limit}
+\item{ylim}{A vector including the lower and upper limit of the y-axis}
 
 \item{...}{Arguments to be passed to methods, such as graphical parameters (see par).}
 }

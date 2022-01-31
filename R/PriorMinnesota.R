@@ -10,7 +10,7 @@
 #' @references Koop, G., & Korobilis, D. (2010). Bayesian multivariate time series methods for empirical macroeconomics. Now Publishers Inc.
 #' @author David Gabauer
 #' @export
-MinnesotaPrior = function(gamma, k, nlag) {
+MinnesotaPrior = function(gamma=0.1, k, nlag) {
   m = nlag*(k^2)
   bprior = c(cbind(0*diag(k), matrix(0, ncol=(nlag-1)*k, nrow=k)))
   V_i = matrix(0, nrow=(m/k), ncol=k)

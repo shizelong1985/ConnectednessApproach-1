@@ -33,7 +33,7 @@ ExtendedJointConnectedness = function(Phi, Sigma, nfore) {
   }
 
   date = dimnames(Sigma)[[3]]
-  TOTAL = array(NA, c(t,1), dimnames=list(as.character(date), "TCI"))
+  TCI = array(NA, c(t,1), dimnames=list(as.character(date), "TCI"))
   NPDC = NET = FROM = TO = array(NA, c(t, k), dimnames=list(as.character(date), NAMES))
   CT = PCI = NPSO = INFLUENCE = array(NA, c(k, k, t), dimnames=list(NAMES, NAMES, as.character(date)))
 
@@ -98,13 +98,13 @@ ExtendedJointConnectedness = function(Phi, Sigma, nfore) {
     FROM[ij,] = dca$FROM
     NET[ij,] = dca$NET
     NPSO[,,ij] = dca$NPSO
-    TOTAL[ij,] = dca$TOTAL
+    TCI[ij,] = dca$TCI
     PCI[,,ij] = dca$PCI
     NPDC[ij,] = dca$NPDC
     INFLUENCE[,,ij] = dca$INFLUENCE
     pb$tick()
   }
   TABLE = ConnectednessTable(CT/100)$TABLE
-  return = list(TABLE=TABLE, FEVD=CT, TOTAL=TOTAL, cTOTAL=NULL, TO=TO, FROM=FROM,
-                NET=NET, NPDC=NPDC, NPSO=NPSO, PCI=PCI, INFLUENCE=INFLUENCE)
+  return = list(TABLE=TABLE, FEVD=CT, TCI=TCI, cTCI=NULL, TO=TO, FROM=FROM,
+                NET=NET, NPDC=NPDC, NPSO=NPSO, PCI=PCI, INFLUENCE=INFLUENCE, approach="Extended Joint")
 }

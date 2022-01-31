@@ -4,7 +4,7 @@
 \alias{MinnesotaPrior}
 \title{Minnesota Prior}
 \usage{
-MinnesotaPrior(gamma, k, nlag)
+MinnesotaPrior(gamma = 0.1, k, nlag)
 }
 \arguments{
 \item{gamma}{Diagonal value of variance-covariance matrix}
