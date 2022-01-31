@@ -60,5 +60,5 @@ ConnectednessPartial = function(dca, group=c(1,2), corrected=TRUE) {
   }
 
   return = list(TCI=TCI, cTCI=cTCI, NET=NET, TO=TO, FROM=FROM,
-                TCIL_=TCI_, cTCI_=cTCI_, NET_=NET_, TO_=TO_, FROM_=FROM_)
+                TCI_=TCI_, cTCI_=cTCI_, NET_=NET_, TO_=TO_, FROM_=FROM_)
 }

@@ -14,5 +14,5 @@ BayesPrior = function(x, nlag){
   fit = VAR(x, configuration=list(nlag=nlag))
   bprior = c(fit$B)
   Vprior = diag(c(fit$se))^2
-  return=list(bprior=bprior, Vprior=Vprior, Q=fit$Sigma[,,1])
+  return=list(bprior=bprior, Vprior=Vprior, Q=fit$Q[,,1])
 }
