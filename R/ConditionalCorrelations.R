@@ -1,0 +1,20 @@
+#' @title Partial Conditional Correlations
+#' @description Compute partial conditional correlations
+#' @param Q Variance-covariance matrix of dimension KxKxT
+#' @return Get partial conditional correlations
+#' @examples
+#' #data(dy2012)
+#' #fit = VAR(dy2012, configuration=list(nlag=1))
+#' #pcc = ConditionalCorrelation(fit$Q)
+#' @author David Gabauer
+#' @export
+ConditionalCorrelation = function (Q) {
+  R = Q
+  k = dim(Q)[1]
+  for (i in 1:k) {
+    for (j in 1:k) {
+      R[i,j,] = Q[i,j,] / (sqrt(Q[i,i,])*sqrt(Q[j,j,]))
+    }
+  }
+  return(R)
+}
