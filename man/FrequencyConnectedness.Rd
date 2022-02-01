@@ -8,10 +8,11 @@ FrequencyConnectedness(
   Phi,
   Sigma,
   nfore,
-  partition,
+  partition = c(pi, pi/2, 0),
   generalized = TRUE,
   orth = FALSE,
-  no.corr = FALSE
+  no.corr = FALSE,
+  scenario = "ABS"
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ FrequencyConnectedness(
 \item{orth}{Orthorgonalized shocks}
 
 \item{no.corr}{Uncorrelated shocks}
+
+\item{scenario}{ABS or WTH}
 }
 \value{
 Get connectedness measures

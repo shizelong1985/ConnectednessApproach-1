@@ -105,6 +105,6 @@ ExtendedJointConnectedness = function(Phi, Sigma, nfore) {
     pb$tick()
   }
   TABLE = ConnectednessTable(CT/100)$TABLE
-  return = list(TABLE=TABLE, FEVD=CT, TCI=TCI, cTCI=NULL, TO=TO, FROM=FROM,
+  return = list(TABLE=TABLE, CT=CT/100, TCI=TCI, TO=TO, FROM=FROM,
                 NET=NET, NPDC=NPDC, NPSO=NPSO, PCI=PCI, INFLUENCE=INFLUENCE, approach="Extended Joint")
 }

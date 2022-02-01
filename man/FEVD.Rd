@@ -10,7 +10,6 @@ FEVD(
   nfore = 100,
   type = c("time", "frequency"),
   generalized = TRUE,
-  no.corr = FALSE,
   orth = FALSE,
   range = NULL
 )
@@ -25,8 +24,6 @@ FEVD(
 \item{type}{Time or Frequency connectedness approach}
 
 \item{generalized}{Generalized or orthorgonalized FEVD}
-
-\item{no.corr}{Uncorrelated shocks}
 
 \item{orth}{Orthorogonalize shocks}
 

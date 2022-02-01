@@ -4,14 +4,14 @@
 \alias{plot_influence}
 \title{Dynamic influence connectedness plot}
 \usage{
-plot_influence(ca, col = "steelblue4", save = FALSE, ylim = c(NULL, NULL), ...)
+plot_influence(ca, save = FALSE, path = "./Results", ylim = c(NULL, NULL), ...)
 }
 \arguments{
 \item{ca}{Connectedness object}
 
-\item{col}{Color}
-
 \item{save}{Save plot as pdf}
+
+\item{path}{Path where plots should be saved}
 
 \item{ylim}{A vector including the lower and upper limit of the y-axis}
 

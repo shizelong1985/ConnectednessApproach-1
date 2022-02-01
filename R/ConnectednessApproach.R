@@ -76,7 +76,7 @@ ConnectednessApproach = function(x,
                                    TVPVAR=list(kappa1=0.99, kappa2=0.99, prior="BayesPrior", gamma=0.01)),
                                  Connectedness_config = list(
                                    TimeConnectedness=list(generalized=TRUE),
-                                   FrequencyConnectedness=list(partition=c(pi,pi/2,0), generalized=TRUE)
+                                   FrequencyConnectedness=list(partition=c(pi,pi/2,0), generalized=TRUE, scenario="ABS")
                                  )
 ) {
   if (class(x)!="zoo") {
@@ -164,7 +164,8 @@ ConnectednessApproach = function(x,
   } else if (connectedness=="Frequency") {
     dca = FrequencyConnectedness(Phi=B_t, Sigma=Q_t, nfore=nfore,
                                  partition=Connectedness_config$FrequencyConnectedness$partition,
-                                 generalized=Connectedness_config$FrequencyConnectedness$generalized)
+                                 generalized=Connectedness_config$FrequencyConnectedness$generalized,
+                                 scenario=Connectedness_config$FrequencyConnectedness$scenario)
   } else if (connectedness=="Joint") {
     dca = JointConnectedness(Phi=B_t, Sigma=Q_t, nfore=nfore)
   } else if (connectedness=="Extended Joint") {

@@ -4,14 +4,14 @@
 \alias{plot_to}
 \title{Dynamic to total directional connectedness plot}
 \usage{
-plot_to(ca, col = "steelblue4", save = FALSE, ylim = c(NULL, NULL), ...)
+plot_to(ca, save = FALSE, path = "./Results", ylim = c(NULL, NULL), ...)
 }
 \arguments{
 \item{ca}{Connectedness object}
 
-\item{col}{Color}
-
 \item{save}{Save plot as pdf}
+
+\item{path}{Path where plots should be saved}
 
 \item{ylim}{A vector including the lower and upper limit of the y-axis}
 

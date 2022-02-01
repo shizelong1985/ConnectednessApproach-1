@@ -44,7 +44,7 @@ DynamicConnectedness = function(Phi, Sigma, nfore=10, generalized=TRUE) {
     NAMES = 1:k
   }
   date = dimnames(Sigma)[[3]]
-  TCI = cTCI = array(NA, c(t,1), dimnames=list(as.character(date), "TCI"))
+  TCI = array(NA, c(t,1,2), dimnames=list(as.character(date), "TCI", c("cTCI","TCI")))
   NPDC = NET = FROM = TO = array(NA, c(t, k), dimnames=list(as.character(date), NAMES))
   CT = PCI = NPSO = INFLUENCE = array(NA, c(k, k, t), dimnames=list(NAMES, NAMES, as.character(date)))
   for (i in 1:t) {
@@ -53,8 +53,7 @@ DynamicConnectedness = function(Phi, Sigma, nfore=10, generalized=TRUE) {
   pb = progress::progress_bar$new(total=t)
   for (i in 1:t) {
     ct = ConnectednessTable(CT[,,i])
-    TCI[i,] = ct$TCI
-    cTCI[i,] = ct$cTCI
+    TCI[i,1,] = c(ct$cTCI, ct$TCI)
     TO[i,] = ct$TO
     FROM[i,] = ct$FROM
     NET[i,] = ct$NET
@@ -65,6 +64,6 @@ DynamicConnectedness = function(Phi, Sigma, nfore=10, generalized=TRUE) {
     pb$tick()
   }
   TABLE = ConnectednessTable(CT)$TABLE
-  return = list(TABLE=TABLE, FEVD=CT, TCI=TCI, cTCI=cTCI, TO=TO, FROM=FROM,
-                NET=NET, NPDC=NPDC, NPSO=NPSO, PCI=PCI, INFLUENCE=INFLUENCE)
+  return = list(TABLE=TABLE, CT=CT, TCI=TCI, TO=TO, FROM=FROM,
+                NET=NET, NPDC=NPDC, NPSO=NPSO, PCI=PCI, INFLUENCE=INFLUENCE, approach="Time")
 }

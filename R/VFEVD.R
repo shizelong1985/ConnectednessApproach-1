@@ -86,7 +86,7 @@ VFEVD = function(fit, nfore=100, standardize=FALSE) {
     fevd = t(num)/den
     VFEVD[,,i] = (fevd/apply(fevd, 1, sum))
   }
-  cTCI = TCI = array(NA, c(t,1),dimnames=list(date,"TCI"))
+  TCI = array(NA, c(t,2),dimnames=list(date,c("cTCI","TCI")))
   NPSO = array(NA, c(k,k,t),dimnames=list(NAMES,NAMES,date))
   TO = FROM = NET = array(NA, c(t,k),dimnames=list(date,NAMES))
   for (i in 1:t) {
@@ -95,9 +95,8 @@ VFEVD = function(fit, nfore=100, standardize=FALSE) {
     TO[i,] = dca$TO
     FROM[i,] = dca$FROM
     NPSO[,,i] = dca$NPSO
-    TCI[i,] = dca$TCI
-    cTCI[i,] = dca$cTCI
+    TCI[i,] = c(dca$cTCI, dca$TCI)
   }
   TABLE = ConnectednessTable(VFEVD)$TABLE
-  return = list(TABLE=TABLE, FEVD=VFEVD, IRF=VIRF, cTCI=cTCI, TCI=TCI, NET=NET, TO=TO, FROM=FROM)
+  return = list(TABLE=TABLE, FEVD=VFEVD, IRF=VIRF, TCI=TCI, NET=NET, TO=TO, FROM=FROM)
 }

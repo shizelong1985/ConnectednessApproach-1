@@ -4,16 +4,25 @@
 \alias{plot_tci}
 \title{Dynamic total connectedness plot}
 \usage{
-plot_tci(ca, col = "steelblue4", save = FALSE, ylim = c(NULL, NULL), ...)
+plot_tci(
+  ca,
+  save = FALSE,
+  path = "./Results",
+  ylim = c(NULL, NULL),
+  corrected = TRUE,
+  ...
+)
 }
 \arguments{
 \item{ca}{Connectedness object}
 
-\item{col}{Color}
-
 \item{save}{Save plot as pdf}
 
+\item{path}{Path where plots should be saved}
+
 \item{ylim}{A vector including the lower and upper limit of the y-axis}
+
+\item{corrected}{Visualizing standard or corrected TCI values}
 
 \item{...}{Arguments to be passed to methods, such as graphical parameters (see par).}
 }

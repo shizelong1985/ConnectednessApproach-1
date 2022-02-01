@@ -19,25 +19,35 @@
 #' @author David Gabauer
 #' @export
 ConditionalConnectedness = function(dca, group=c(1,2,3)) {
-  ct = dca$FEVD[group,group,,drop=FALSE]
-  k = length(group)
-  NAMES = dimnames(ct)[[1]]
-  date = dimnames(ct)[[3]]
-  t = length(date)
-
-  TCI = cTCI = array(NA, c(t,1), dimnames=list(date,"TCI"))
-  TO = FROM = NET = array(NA, c(t,k), dimnames=list(date,NAMES))
-  FEVD = NPSO = array(NA, c(k,k,t), dimnames=list(NAMES,NAMES,date))
-  for (i in 1:t) {
-    cc = ConnectednessTable(ct[,,i]/rowSums(ct[,,i]))
-    FEVD[,,i] = cc$FEVD
-    TCI[i,] = cc$TCI
-    cTCI[i,] = cc$cTCI
-    TO[i,] = cc$TO
-    FROM[i,] = cc$FROM
-    NET[i,] = cc$NET
-    NPSO[,,i] = cc$NPSO
+  if (dca$approach=="Frequency" | dca$approach=="Joint") {
+    stop(paste("Conditional connectedness measures are not implemented for",dca$approach, "connectedness"))
+  } else {
+    ct = dca$CT[group,group,,drop=FALSE]
+    k = length(group)
+    NAMES = dimnames(ct)[[1]]
+    date = dimnames(ct)[[3]]
+    t = length(date)
+    
+    TCI = array(NA, c(t,1,2), dimnames=list(date,"TCI",c("cTCI","TCI")))
+    NPDC = TO = FROM = NET = array(NA, c(t,k), dimnames=list(date,NAMES))
+    INFLUENCE = PCI = FEVD = NPSO = array(NA, c(k,k,t), dimnames=list(NAMES,NAMES,date))
+    for (i in 1:t) {
+      cc = ConnectednessTable(ct[,,i]/rowSums(ct[,,i]))
+      FEVD[,,i] = cc$FEVD
+      TCI[i,1,] = c(cc$cTCI, cc$TCI)
+      TO[i,] = cc$TO
+      FROM[i,] = cc$FROM
+      NET[i,] = cc$NET
+      NPDC[i,] = cc$NPDC
+      NPSO[,,i] = cc$NPSO
+      PCI[,,i] = cc$PCI
+      INFLUENCE[,,i] = cc$INFLUENCE
+    }
+    if (dca$approach=="Joint" | dca$approach=="Extended Joint") {
+      tci = TCI[,1,]
+      TCI = tci[,2,drop=FALSE]
+    }
+    TABLE = ConnectednessTable(FEVD/100)$TABLE
+    return = list(TABLE=TABLE, FEVD=FEVD, TCI=TCI, NET=NET, TO=TO, FROM=FROM, NPDC=NPDC, NPSO=NPSO, PCI=PCI, INFLUENCE=INFLUENCE, approach="Conditional")
   }
-  TABLE = ConnectednessTable(FEVD/100)$TABLE
-  return = list(TABLE=TABLE, FEVD=FEVD, TCI=TCI, cTCI=cTCI, NET=NET, TO=TO, FROM=FROM, NPSO=NPSO, approach="Conditional")
 }

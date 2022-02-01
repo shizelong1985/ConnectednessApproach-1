@@ -4,10 +4,10 @@
 \alias{PartialCorrelations}
 \title{Partial Contemporaneous Correlations}
 \usage{
-PartialCorrelations(fit)
+PartialCorrelations(Q)
 }
 \arguments{
-\item{fit}{ghjghj}
+\item{Q}{variance-covariance matrix}
 }
 \value{
 Get partial contemporaneous correlations

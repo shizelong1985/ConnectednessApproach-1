@@ -3,7 +3,6 @@
 #' @description This function results in partial connectedness measures
 #' @param dca Dynamic connectedness object
 #' @param group Vector of group indices
-#' @param corrected Should corrected TCI or normal TCI be used
 #' @return Get connectedness measures
 #' @examples
 #' #Replication of Gabauer and Gupta (2018)
@@ -21,44 +20,46 @@
 #' @references Gabauer, D., & Gupta, R. (2018). On the transmission mechanism of country-specific and international economic uncertainty spillovers: Evidence from a TVP-VAR connectedness decomposition approach. Economics Letters, 171, 63-71.
 #' @author David Gabauer
 #' @export
-ConnectednessPartial = function(dca, group=c(1,2), corrected=TRUE) {
-  ct = dca$FEVD
-  NAMES = dimnames(ct)[[1]]
-  date = dimnames(ct)[[3]]
-  k = dim(ct)[1]
-  t = dim(ct)[3]
-
-  CT_ = ct
-  CT = ct*0
-  for (i in group) {
-    CT[,i,] = ct[,i,]
-    CT[i,,] = ct[i,,]
-    CT_[,i,] = ct[,i,]*0
-    CT_[i,,] = ct[i,,]*0
+PartialConnectedness = function(dca, group=c(1,2)) {
+  if (dca$approach=="Frequency" | dca$approach=="Joint") {
+    stop(paste("Partial connectedness measures are not implemented for",dca$approach, "connectedness"))
+  } else {
+    ct = dca$CT
+    NAMES = dimnames(ct)[[1]]
+    date = dimnames(ct)[[3]]
+    k = dim(ct)[1]
+    t = dim(ct)[3]
+  
+    CTx = ct
+    CT = ct*0
+    for (i in group) {
+      CT[,i,] = ct[,i,]
+      CT[i,,] = ct[i,,]
+      CTx[,i,] = ct[,i,]*0
+      CTx[i,,] = ct[i,,]*0
+    }
+  
+    TCI = array(NA, c(t,2,2), dimnames=list(as.character(date), c("Inc","Exc"), c("cTCI", "TCI")))
+    NPDC = NET = FROM = TO = array(NA, c(t, k, 2), dimnames=list(date, NAMES,c("Inc","Exc")))
+    for (i in 1:t) {
+      dca = ConnectednessTable(CT[,,i])
+      TCI[i,1,] = c(dca$cTCI, dca$TCI)
+      TO[i,,1] = dca$TO
+      FROM[i,,1] = dca$FROM
+      NET[i,,1] = dca$NET
+      NPDC[i,,1] = dca$NPDC
+    }
+    for (i in 1:t) {
+      dca = ConnectednessTable(CTx[,,i])
+      TCI[i,2,] = c(dca$cTCI, dca$TCI)
+      TO[i,,2] = dca$TO
+      FROM[i,,2] = dca$FROM
+      NET[i,,2] = dca$NET
+      NPDC[i,,2] = dca$NPDC
+    }
+    TABLE = ConnectednessTable(CT)$TABLE
+    TABLEx = ConnectednessTable(CTx)$TABLE
+    
+    return = list(TABLE=list(TABLE,TABLEx), TCI=TCI, NET=NET, TO=TO, FROM=FROM, NPDC=NPDC, approach="partial")
   }
-
-  TCI = cTCI = array(NA, c(t,1), dimnames=list(as.character(date), "TCI"))
-  NPDC = NET = FROM = TO = array(NA, c(t, k), dimnames=list(date, NAMES))
-  for (i in 1:t) {
-    dca = ConnectednessTable(CT[,,i])
-    TCI[i,] = dca$TCI
-    cTCI[i,] = dca$cTCI
-    TO[i,] = dca$TO
-    FROM[i,] = dca$FROM
-    NET[i,] = dca$NET
-  }
-
-  TCI_ = cTCI_ = array(NA, c(t,1), dimnames=list(as.character(date), "TCI"))
-  NPDCv = NET_ = FROM_ = TO_ = array(NA, c(t, k), dimnames=list(date, NAMES))
-  for (i in 1:t) {
-    dca = ConnectednessTable(CT_[,,i])
-    TCIL_[i,] = dca$TCI
-    cTCI_[i,] = dca$cTCI
-    TO_[i,] = dca$TO
-    FROM_[i,] = dca$FROM
-    NET_[i,] = dca$NET
-  }
-
-  return = list(TCI=TCI, cTCI=cTCI, NET=NET, TO=TO, FROM=FROM,
-                TCI_=TCI_, cTCI_=cTCI_, NET_=NET_, TO_=TO_, FROM_=FROM_)
 }

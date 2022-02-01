@@ -4,14 +4,12 @@
 \alias{ConnectednessDecompose}
 \title{Connectedness Decomposition}
 \usage{
-ConnectednessDecompose(dca, groups = list(c(1), c(2:k)), corrected = TRUE)
+ConnectednessDecompose(dca, groups = list(c(1), c(2:k)))
 }
 \arguments{
 \item{dca}{Dynamic connectedness object}
 
 \item{groups}{List of at least two group vectors}
-
-\item{corrected}{Should corrected TCI or normal TCI be used}
 }
 \value{
 Get connectedness measures

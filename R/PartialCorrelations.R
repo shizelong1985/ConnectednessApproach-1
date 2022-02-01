@@ -1,7 +1,7 @@
 #' @title Partial Contemporaneous Correlations
 #'
 #' @description Get partial contemporaneous correlations
-#' @param fit ghjghj
+#' @param Q variance-covariance matrix
 #' @return Get partial contemporaneous correlations
 #' @examples
 #' #data(dy2012)
@@ -10,8 +10,8 @@
 #' @references Dahlhaus, R., & Eichler, M. (2003). Causality and graphical models in time series analysis. Oxford Statistical Science Series, 115-137.
 #' @author David Gabauer
 #' @export
-PartialCorrelations = function (fit) {
-  pcc = sigma = fit$Q
+PartialCorrelations = function (Q) {
+  pcc = sigma = Q
   for (l in 1:dim(sigma)[3]) {
     precision = solve(sigma[,,l])
     theta = diag(1/sqrt(diag(precision)))

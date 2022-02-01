@@ -4,14 +4,14 @@
 \alias{plot_net}
 \title{Dynamic net total directional connectedness plot}
 \usage{
-plot_net(ca, col = "steelblue4", save = FALSE, ylim = c(NULL, NULL), ...)
+plot_net(ca, save = FALSE, path = "./Results", ylim = c(NULL, NULL), ...)
 }
 \arguments{
 \item{ca}{Connectedness object}
 
-\item{col}{Color}
-
 \item{save}{Save plot as pdf}
+
+\item{path}{Path where plots should be saved}
 
 \item{ylim}{A vector including the lower and upper limit of the y-axis}
 

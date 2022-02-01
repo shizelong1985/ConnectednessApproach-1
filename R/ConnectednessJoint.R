@@ -34,7 +34,8 @@ JointConnectedness = function(Phi, Sigma, nfore) {
   date = as.character(dimnames(Sigma)[[3]])
   TCI = array(NA, c(t,1), dimnames=list(date, "TCI"))
   NET = FROM = TO = array(NA, c(t, k), dimnames=list(date, NAMES))
-  CT = array(NA, c(k+3, k+1, t))
+  CT = array(NA, c(k, k, t), dimnames=list(NAMES, NAMES, date))
+  CT_ = array(NA, c(k+3, k+1, t))
   pb = progress_bar$new(total=t)
   for (ij in 1:t) {
     # calculate the gFEVD
@@ -76,14 +77,15 @@ JointConnectedness = function(Phi, Sigma, nfore) {
     FROM[ij,] = S_jnt_from
     TO[ij,] = colSums(gSOT-diag(diag(gSOT)))/lambda
     NET[ij,] = TO[ij,] - FROM[ij,]
-    CT[,,ij] = rbind(rbind(rbind(cbind(gSOT, FROM[ij,]), c(TO[ij,], sum(TO[ij,]))), c(colSums(gSOT), 0)), c(NET[ij,], TCI[ij,]))
+    CT[,,ij] = gSOT
+    CT_[,,ij] = rbind(rbind(rbind(cbind(gSOT, FROM[ij,]), c(TO[ij,], sum(TO[ij,]))), c(colSums(gSOT), 0)), c(NET[ij,], TCI[ij,]))
     pb$tick()
   }
-  TABLE = apply(CT,1:2,mean)
+  TABLE = apply(CT_,1:2,mean)
   rownames(TABLE) = c(NAMES, "TO", "Inc.Own", "NET")
   colnames(TABLE) = c(NAMES, "FROM")
   TABLE = format(round(TABLE, 2), nsmall=2)
   TABLE[k+2,k+1] = "TCI"
-  return = list(TABLE=TABLE, CT=CT[1:(nrow(CT)-3),1:(ncol(CT)-1),]/100, TCI=TCI, TO=TO, FROM=FROM, NET=NET,
-                NPSO=NULL, NPDC=NULL, PCI=NULL, INFLUENCE=NULL, cTCIL=NULL, approach="Joint")
+  return = list(TABLE=TABLE, CT=CT/100, TCI=TCI, TO=TO, FROM=FROM, NET=NET,
+                NPSO=NULL, NPDC=NULL, PCI=NULL, INFLUENCE=NULL, approach="Joint")
 }

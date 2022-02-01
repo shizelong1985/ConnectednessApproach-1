@@ -22,45 +22,49 @@
 #' @author David Gabauer
 #' @export
 ConnectednessAggregate = function(dca, groups=list(c(1), c(2:k)), corrected=TRUE) {
-  ct = dca$FEVD
-  date = dimnames(ct)[[3]]
-  k = dim(ct)[1]
-  m = length(groups)
-  t = dim(ct)[3]
-
-  NAMES_group = names(groups)
-  if (is.null(NAMES_group)) {
-    NAMES_group = paste0("GROUP", 1:m)
-  }
-
-  CT_group = array(0, c(m, m, t), dimnames=list(NAMES_group, NAMES_group, date))
-  for (i in 1:m) {
-    for (j in 1:m) {
-      group_1 = groups[[i]]
-      group_2 = groups[[j]]
-      CT_group[i,j,] = apply(ct[group_1,group_2,,drop=FALSE],3,sum)/m
-      CT_group[j,i,] = apply(ct[group_2,group_1,,drop=FALSE],3,sum)/m
+  if (dca$approach=="Frequency" | dca$approach=="Joint") {
+    stop(paste("Aggregated connectedness measures are not implemented for",dca$approach, "connectedness"))
+  } else {
+    ct = dca$CT
+    date = dimnames(ct)[[3]]
+    k = dim(ct)[1]
+    m = length(groups)
+    t = dim(ct)[3]
+  
+    NAMES_group = names(groups)
+    if (is.null(NAMES_group)) {
+      NAMES_group = paste0("GROUP", 1:m)
     }
+  
+    CT_group = array(0, c(m, m, t), dimnames=list(NAMES_group, NAMES_group, date))
+    for (i in 1:m) {
+      for (j in 1:m) {
+        group_1 = groups[[i]]
+        group_2 = groups[[j]]
+        CT_group[i,j,] = apply(ct[group_1,group_2,,drop=FALSE],3,sum)/m
+        CT_group[j,i,] = apply(ct[group_2,group_1,,drop=FALSE],3,sum)/m
+      }
+    }
+  
+    TCI_group = array(NA, c(t,2,2), dimnames=list(as.character(date), c("TCI","iTCI"), c("cTCI","TCI")))
+    NPDC_group = NET_group = FROM_group = TO_group = array(NA, c(t, m), dimnames=list(date, NAMES_group))
+    PCI_group = NPSO_group = INFLUENCE_group = array(NA, c(m, m, t), dimnames=list(NAMES_group, NAMES_group, date))
+    for (i in 1:t) {
+      dca = ConnectednessTable(CT_group[,,i])
+      TCI_group[i,1,] = c(dca$cTCI, dca$TCI)
+      TO_group[i,] = dca$TO
+      FROM_group[i,] = dca$FROM
+      NET_group[i,] = dca$NET
+      NPDC_group[i,] = dca$NPDC
+      PCI_group[,,i] = dca$PCI
+      NPSO_group[,,i] = dca$NPSO
+      INFLUENCE_group[,,i] = dca$INFLUENCE
+    }
+    TCI_group[,2,] = TCI_group[,1,]*k/(k-1)*((m-1)/m)
+    TABLE = ConnectednessTable(CT_group)$TABLE
+    
+    return = list(TABLE=TABLE, CT=CT_group, TCI=TCI_group, NET=NET_group, TO=TO_group, FROM=FROM_group,
+                  NPDC=NPDC_group, NPSO=NPSO_group, PCI=PCI_group, INFLUENCE=INFLUENCE_group,
+                  approach="Aggregate")
   }
-
-  TCI_group = cTCI_group = array(NA, c(t,1), dimnames=list(as.character(date), "TCI"))
-  NPDC_group = NET_group = FROM_group = TO_group = array(NA, c(t, m), dimnames=list(date, NAMES_group))
-  PCI_group = NPSO_group = INFLUENCE_group = array(NA, c(m, m, t), dimnames=list(NAMES_group, NAMES_group, date))
-  for (i in 1:t) {
-    dca = ConnectednessTable(CT_group[,,i])
-    TCI_group[i,] = dca$TCI
-    cTCI_group[i,] = dca$cTCI
-    TO_group[i,] = dca$TO
-    FROM_group[i,] = dca$FROM
-    NET_group[i,] = dca$NET
-    NPDC_group[i,] = dca$NPDC
-    PCI_group[,,i] = dca$PCI
-    NPSO_group[,,i] = dca$NPSO
-    INFLUENCE_group[,,i] = dca$INFLUENCE
-  }
-  cTCI_inter = cTCI_group*k/(k-1)*((m-1)/m)
-  TCI_inter = TCI_group*k/(k-1)*((m-1)/m)
-  return = list(CT_group=CT_group, TCI_group=TCI_group, cTCI_group=cTCI_group, NET_group=NET_group, TO_group=TO_group, FROM_group=FROM_group,
-                NPDC_group=NPDC_group, NPSO_group=NPSO_group, PCI_group=PCI_group, INFLUENCE_group=INFLUENCE_group,
-                cTCI_inter=cTCI_inter, TCI_inter=TCI_inter, approach="Aggregate")
 }

@@ -4,14 +4,14 @@
 \alias{plot_npdc}
 \title{Dynamic net pairwise transmission plot}
 \usage{
-plot_npdc(ca, col = "steelblue4", save = FALSE, ...)
+plot_npdc(ca, save = FALSE, path = "./Results", ...)
 }
 \arguments{
 \item{ca}{Connectedness object}
 
-\item{col}{Color}
-
 \item{save}{Save plot as pdf}
+
+\item{path}{Path where plots should be saved}
 
 \item{...}{Arguments to be passed to methods, such as graphical parameters (see par).}
 }

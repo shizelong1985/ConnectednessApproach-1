@@ -6,6 +6,7 @@
 #' @param nfore H-step ahead forecast horizon
 #' @param partition Frequency spectrum
 #' @param generalized Orthorgonalized/generalized FEVD
+#' @param scenario ABS or WTH
 #' @param orth Orthorgonalized shocks
 #' @param no.corr Uncorrelated shocks
 #' @return Get connectedness measures
@@ -25,7 +26,7 @@
 #' Baruník, J., & Křehlík, T. (2018). Measuring the frequency dynamics of financial connectedness and systemic risk. Journal of Financial Econometrics, 16(2), 271-296.
 #' @author David Gabauer
 #' @export
-FrequencyConnectedness = function(Phi, Sigma, nfore, partition, generalized=TRUE, orth=FALSE, no.corr=FALSE) {
+FrequencyConnectedness = function(Phi, Sigma, nfore, partition=c(pi,pi/2,0), generalized=TRUE, orth=FALSE, no.corr=FALSE, scenario="ABS") {
   NAMES = colnames(Sigma)
   if (length(dim(Phi))==2) {
     Phi = array(Phi, c(nrow(Phi),ncol(Phi),1))
@@ -36,26 +37,24 @@ FrequencyConnectedness = function(Phi, Sigma, nfore, partition, generalized=TRUE
 
   k = dim(Sigma)[1]
   t = dim(Sigma)[3]
-
   if (is.null(NAMES)) {
     NAMES = 1:k
   }
-  periods = pi/partition
+  periods = round(pi/partition)
   period_names = NULL
   for (i in 1:(length(periods)-1)) {
     period_names = c(period_names, paste0(periods[i], "-", periods[i+1]))
   }
 
-  scenarios = c("ABS","WTH")
   date = as.character(dimnames(Sigma)[[3]])
   interval = length(period_names)
-  new_p = getPartition(partition, nfore)
+  new_p = frequencyConnectedness::getPartition(partition, nfore)
   range = sort(unique(do.call(c, new_p)))
 
-  TCI = cTCI = array(NA, c(t,interval,2), dimnames=list(as.character(date), period_names, scenarios))
+  TCI = array(NA, c(t,interval, 2), dimnames=list(as.character(date), period_names, c("cTCI","TCI")))
   NPDC = array(NA, c(t, k, interval), dimnames=list(date, NAMES, period_names))
-  NET = FROM = TO = array(NA, c(t, k, interval, 2), dimnames=list(date, NAMES, period_names, scenarios))
-  FEVD = NPSO = array(NA, c(k, k, t, interval, 2), dimnames=list(NAMES, NAMES, date, period_names, scenarios))
+  NET = FROM = TO = array(NA, c(t, k, interval), dimnames=list(date, NAMES, period_names))
+  CT = NPSO = array(NA, c(k, k, t, interval), dimnames=list(NAMES, NAMES, date, period_names))
   PCI = INFLUENCE = array(NA, c(k, k, t, interval), dimnames=list(NAMES, NAMES, date, period_names))
   pb = progress_bar$new(total=t)
   for (i in 1:t) {
@@ -64,38 +63,39 @@ FrequencyConnectedness = function(Phi, Sigma, nfore, partition, generalized=TRUE
       rownames(decomp[[ij]]) = colnames(decomp[[ij]]) = 1:ncol(Sigma)
     }
     tables = lapply(new_p, function(j) Reduce('+', decomp[j]))
-    #print(tables)
     for (j in 1:interval) {
-      dca = ConnectednessTable(tables[[j]])
-      FEVD[,,i,j,1] = dca$FEVD
-      TO[i,,j,1] = dca$TO
-      FROM[i,,j,1] = dca$FROM
-      NET[i,,j,1] = dca$NET
-      TCI[i,j,1] = dca$TCI
-      cTCI[i,j,1] = dca$cTCI
-      NPSO[,,i,j,1] = dca$NPSO
-
-      dca = ConnectednessTable(tables[[j]]/sum(sum(tables[[j]]))*k)
-      FEVD[,,i,j,2] = dca$FEVD
-      TO[i,,j,2] = dca$TO
-      FROM[i,,j,2] = dca$FROM
-      NET[i,,j,2] = dca$NET
-      TCI[i,j,2] = dca$TCI
-      cTCI[i,j,2] = dca$cTCI
-      NPSO[,,i,j,2] = dca$NPSO
-
-      PCI[,,i,j] = dca$PCI
-      INFLUENCE[,,i,j] = dca$INFLUENCE
-      NPDC[i,,j] = dca$NPDC
+      if (scenario=="ABS") {
+        dca = ConnectednessTable(tables[[j]])
+        CT[,,i,j] = dca$FEVD
+        TO[i,,j] = dca$TO
+        FROM[i,,j] = dca$FROM
+        NET[i,,j] = dca$NET
+        TCI[i,j,] = c(dca$cTCI, dca$TCI)
+        NPSO[,,i,j] = dca$NPSO
+        PCI[,,i,j] = dca$PCI
+        INFLUENCE[,,i,j] = dca$INFLUENCE
+        NPDC[i,,j] = dca$NPDC
+      } else if (scenario=="WTH") {
+        dca = ConnectednessTable(tables[[j]]/sum(sum(tables[[j]]))*k)
+        CT[,,i,j] = dca$FEVD
+        TO[i,,j] = dca$TO
+        FROM[i,,j] = dca$FROM
+        NET[i,,j] = dca$NET
+        TCI[i,j,] = c(dca$cTCI, dca$TCI)
+        NPSO[,,i,j] = dca$NPSO
+        PCI[,,i,j] = dca$PCI
+        INFLUENCE[,,i,j] = dca$INFLUENCE
+        NPDC[i,,j] = dca$NPDC
+      }
     }
     pb$tick()
   }
 
-  TABLE = array(NA,c(k+4,k+1,interval,2), dimnames=list(c(NAMES, "TO", "Inc.Own", "Net", "NPDC"), c(NAMES, "FROM"), period_names, c("ABS","WTH")))
+  TABLE = array(NA,c(k+4,k+1,interval), dimnames=list(c(NAMES, "TO", "Inc.Own", "Net", "NPDC"), c(NAMES, "FROM"), period_names))
   for (i in 1:interval) {
-    TABLE[,,i,1] = ConnectednessTable(apply(FEVD[,,,i,1], c(1,2), mean)/100)$TABLE
-    TABLE[,,i,2] = ConnectednessTable(apply(FEVD[,,,i,2], c(1,2), mean)/100)$TABLE
+    TABLE[,,i] = ConnectednessTable(CT[,,,i]/100)$TABLE
   }
-  return = list(TABLE=TABLE, FEVD=FEVD, TCI=TCI, cTCI=cTCI, TO=TO, FROM=FROM,
+  # still TCI and cTCI
+  return = list(TABLE=TABLE, CT=CT/100, TCI=TCI, TO=TO, FROM=FROM,
                 NET=NET, NPDC=NPDC, NPSO=NPSO, PCI=PCI, INFLUENCE=INFLUENCE, approach="Frequency")
 }

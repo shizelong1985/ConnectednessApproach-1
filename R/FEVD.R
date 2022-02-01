@@ -8,7 +8,6 @@
 #' @param range Partition range for frequency approach only.
 #' @param generalized Generalized or orthorgonalized FEVD
 #' @param orth Orthorogonalize shocks
-#' @param no.corr Uncorrelated shocks
 #' @return Orthorgonal/generalized time/frequency forecast error variance decomposition
 #' @examples
 #' #data(dy2012)
@@ -20,14 +19,11 @@
 #' Pesaran, H. H., & Shin, Y. (1998). Generalized impulse response analysis in linear multivariate models. Economics Letters, 58(1), 17-29.
 #' @importFrom stats fft
 #' @export
-FEVD = function (Phi, Sigma, nfore=100, type=c("time","frequency"), generalized=TRUE, no.corr=FALSE, orth=FALSE, range=NULL) {
+FEVD = function (Phi, Sigma, nfore=100, type=c("time","frequency"), generalized=TRUE, orth=FALSE, range=NULL) {
   if (length(dim(Sigma))>2) {
     Sigma = Sigma[,,1]
   }
   irf = IRF(Phi=Phi, Sigma=Sigma, nfore=nfore, orth=orth)$irf
-  if (no.corr) {
-    Sigma = diag(diag(Sigma))
-  }
   if (type=="time") {
     Phi = lapply(1:nfore, function(j) sapply(irf, function(i) i[j,]))
     denom = diag(Reduce("+", lapply(Phi, function(i) i %*% Sigma %*% t(i))))
@@ -40,9 +36,6 @@ FEVD = function (Phi, Sigma, nfore=100, type=c("time","frequency"), generalized=
       FEVD = t(sapply(1:ncol(enum), function(i) enum[,i]/denom[i]))
     }
   } else if (type=="frequency") {
-    if (nfore < 100) {
-      warning("The frequency decomposition works with unconditional IRF. You have opted for \n\t\t\tIRF with horizon lower than 100 periods. This might cause trouble, some frequencies\n\t\t\tmight not be estimable depending on the bounds settings.")
-    }
     fftir = lapply(irf, function(i) apply(i, 2, fft))
     fftir = lapply(1:(nfore+1), function(j) sapply(fftir, function(i) i[j,]))
     denom = diag(Re(Reduce("+", lapply(fftir, function(i) i %*% Sigma %*% t(Conj(i))/nfore)[range])))
