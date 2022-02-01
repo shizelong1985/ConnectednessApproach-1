@@ -49,7 +49,7 @@ ConnectednessAggregate = function(dca, groups=list(c(1), c(2:k)), standardize=TR
       CT_group[,,i] = CT_group[,,i]/rowSums(CT_group[,,i])
     }
     
-    TCI_group = array(NA, c(t,2,2), dimnames=list(as.character(date), c("TCI","iTCI"), c("cTCI","TCI")))
+    TCI_group = array(NA, c(t,1,2), dimnames=list(as.character(date), c("TCI"), c("cTCI","TCI")))
     NPDC_group = NET_group = FROM_group = TO_group = array(NA, c(t, m), dimnames=list(date, NAMES_group))
     PCI_group = NPSO_group = INFLUENCE_group = array(NA, c(m, m, t), dimnames=list(NAMES_group, NAMES_group, date))
     for (i in 1:t) {
@@ -63,7 +63,6 @@ ConnectednessAggregate = function(dca, groups=list(c(1), c(2:k)), standardize=TR
       NPSO_group[,,i] = dca$NPSO
       INFLUENCE_group[,,i] = dca$INFLUENCE
     }
-    TCI_group[,2,] = TCI_group[,1,]*k/(k-1)*((m-1)/m)
     TABLE = ConnectednessTable(CT_group)$TABLE
     
     return = list(TABLE=TABLE, CT=CT_group, TCI=TCI_group, NET=NET_group, TO=TO_group, FROM=FROM_group,
