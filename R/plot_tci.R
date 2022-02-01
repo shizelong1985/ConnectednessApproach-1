@@ -11,7 +11,7 @@
 #' @import graphics
 #' @import grDevices
 #' @export
-plot_tci = function(ca, save=FALSE, path='./Results', ylim=c(NULL, NULL), corrected=TRUE, ...) {
+plot_tci = function(ca, save=FALSE, path='./Results', ylim=c(NULL, NULL), corrected=FALSE, ...) {
   if (!dir.exists(path)) {
     dir.create(path)
   }
