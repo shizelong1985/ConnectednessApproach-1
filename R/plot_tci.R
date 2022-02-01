@@ -11,7 +11,7 @@
 #' @import graphics
 #' @import grDevices
 #' @export
-plot_tci = function(ca, save=FALSE, path='./Results', ylim=c(NULL, NULL), corrected=FALSE, ...) {
+plot_tci = function(ca, save=FALSE, path='./Results', ylim=c(NULL, NULL), corrected=TRUE, ...) {
   if (save) {
     if (!dir.exists(path)) {
       dir.create(path)
@@ -52,14 +52,22 @@ plot_tci = function(ca, save=FALSE, path='./Results', ylim=c(NULL, NULL), correc
       if (is.null(upper)) {
         upper = max(apply(x[,,ind],1,sum))
       }
-      plot(date, apply(x[,,ind,drop=FALSE],1,sum), type="l", main="", las=1, xlab="", ylab="", xaxs="i", yaxs="i", tck=-0.02, ylim=c(lower,upper))#, ...)
-      grid(NA, NULL, lty=2)
-      polygon(c(date,rev(date)),c(c(rep(0,t)),rev(apply(x[,,ind,drop=FALSE],1,sum))),col=1, border=1)
+      if (ca$approach=="Aggregate") {
+        upper = max(x[,,ind])
+        plot(date, NA*x[,1,ind,drop=FALSE], type="l", main="", las=1, xlab="", ylab="", xaxs="i", yaxs="i", tck=-0.02, ylim=c(lower,upper))#, ...)
+        grid(NA, NULL, lty=2)
+        legend_names = c(colnames(x[,,ind,drop=FALSE]))
+        fill = c(1:iter)
+      } else {
+        plot(date, apply(x[,,ind,drop=FALSE],1,sum), type="l", main="", las=1, xlab="", ylab="", xaxs="i", yaxs="i", tck=-0.02, ylim=c(lower,upper))#, ...)
+        grid(NA, NULL, lty=2)
+        polygon(c(date,rev(date)),c(c(rep(0,t)),rev(apply(x[,,ind,drop=FALSE],1,sum))),col=1, border=1)
+        legend_names = c("total",colnames(x[,,ind,drop=FALSE]))
+        fill = c(1:(iter+1))
+      }
       for (j in iter:1) {
         lines(date, x[,j,ind], col=j+1, lty=2)
       }
-      legend_names = c("total",colnames(x[,,ind,drop=FALSE]))
-      fill = c(1:(iter+1))
       if (ca$approach=="Decompose") {
         gTCI = ca$gTCI[,,ind]
         legend_names = c(legend_names, colnames(gTCI))

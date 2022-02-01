@@ -21,7 +21,7 @@
 #' @references Gabauer, D., & Gupta, R. (2018). On the transmission mechanism of country-specific and international economic uncertainty spillovers: Evidence from a TVP-VAR connectedness decomposition approach. Economics Letters, 171, 63-71.
 #' @author David Gabauer
 #' @export
-ConnectednessAggregate = function(dca, groups=list(c(1), c(2:k)), corrected=TRUE) {
+ConnectednessAggregate = function(dca, groups=list(c(1), c(2:k)), standardize=TRUE) {
   if (dca$approach=="Frequency" | dca$approach=="Joint") {
     stop(paste("Aggregated connectedness measures are not implemented for",dca$approach, "connectedness"))
   } else {
@@ -30,12 +30,12 @@ ConnectednessAggregate = function(dca, groups=list(c(1), c(2:k)), corrected=TRUE
     k = dim(ct)[1]
     m = length(groups)
     t = dim(ct)[3]
-  
+    
     NAMES_group = names(groups)
     if (is.null(NAMES_group)) {
       NAMES_group = paste0("GROUP", 1:m)
     }
-  
+    
     CT_group = array(0, c(m, m, t), dimnames=list(NAMES_group, NAMES_group, date))
     for (i in 1:m) {
       for (j in 1:m) {
@@ -45,7 +45,10 @@ ConnectednessAggregate = function(dca, groups=list(c(1), c(2:k)), corrected=TRUE
         CT_group[j,i,] = apply(ct[group_2,group_1,,drop=FALSE],3,sum)/m
       }
     }
-  
+    for (i in 1:dim(CT_group)[3]) {
+      CT_group[,,i] = CT_group[,,i]/rowSums(CT_group[,,i])
+    }
+    
     TCI_group = array(NA, c(t,2,2), dimnames=list(as.character(date), c("TCI","iTCI"), c("cTCI","TCI")))
     NPDC_group = NET_group = FROM_group = TO_group = array(NA, c(t, m), dimnames=list(date, NAMES_group))
     PCI_group = NPSO_group = INFLUENCE_group = array(NA, c(m, m, t), dimnames=list(NAMES_group, NAMES_group, date))
