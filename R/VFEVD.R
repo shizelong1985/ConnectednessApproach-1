@@ -87,7 +87,7 @@ VFEVD = function(fit, nfore=100, standardize=FALSE) {
     VFEVD[,,i] = (fevd/apply(fevd, 1, sum))
   }
   TCI = array(NA, c(t,2),dimnames=list(date,c("cTCI","TCI")))
-  NPSO = array(NA, c(k,k,t),dimnames=list(NAMES,NAMES,date))
+  PCI = INFLUENCE = NPSO = array(NA, c(k,k,t),dimnames=list(NAMES,NAMES,date))
   TO = FROM = NET = array(NA, c(t,k),dimnames=list(date,NAMES))
   for (i in 1:t) {
     dca = ConnectednessTable(VFEVD[,,i])
@@ -95,8 +95,10 @@ VFEVD = function(fit, nfore=100, standardize=FALSE) {
     TO[i,] = dca$TO
     FROM[i,] = dca$FROM
     NPSO[,,i] = dca$NPSO
+    PCI[,,i] = dca$PCI
+    INFLUENCE[,,i] = dca$INFLUENCE
     TCI[i,] = c(dca$cTCI, dca$TCI)
   }
   TABLE = ConnectednessTable(VFEVD)$TABLE
-  return = list(TABLE=TABLE, FEVD=VFEVD, IRF=VIRF, TCI=TCI, NET=NET, TO=TO, FROM=FROM)
+  return = list(TABLE=TABLE, FEVD=VFEVD, IRF=VIRF, TCI=TCI, NET=NET, TO=TO, FROM=FROM, NPSO=NPSO, PCI=PCI, INFLUENCE=INFLUENCE, approach="volatility")
 }

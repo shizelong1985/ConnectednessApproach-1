@@ -48,8 +48,8 @@ plot_net = function(ca, save=FALSE, path='./Results', ylim=c(NULL, NULL), ...) {
         for (j in 1:dim(x)[3]) {
           lines(date, x[,i,j], col=j, lty=2)
         }
-        legend("topleft", colnames(x[,1,]), fill=1:dim(x)[3], bty="n")
         abline(h=0, lty=3)
+        legend("topleft", colnames(x[,1,]), fill=1:dim(x)[3], bty="n")
         box()
       }
     }
@@ -68,12 +68,12 @@ plot_net = function(ca, save=FALSE, path='./Results', ylim=c(NULL, NULL), ...) {
       for (j in ncol(x_):1) {
         polygon(c(date,rev(date)),c(c(rep(0,t)),rev(x_[,j])),col=j+1, border=j+1)
       }
-      legend("topleft", c("total", colnames(x_)), fill=c(1:(ncol(x_)+1)), bty="n")
       for (j in 1:ncol(x_)) {
         lines(date, x_[,j],col=j+1)
       }
       lines(date, apply(x_,1,sum), col=1)
       abline(h=0, lty=3)
+      legend("topleft", c("total", colnames(x_)), fill=c(1:(ncol(x_)+1)), bty="n")
       box()
     }
   }

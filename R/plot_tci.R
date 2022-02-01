@@ -28,24 +28,24 @@ plot_tci = function(ca, save=FALSE, path='./Results', ylim=c(NULL, NULL), correc
   k = ncol(x)
   lower = ylim[1]
   upper = ylim[2]
-
+  
   if (save) pdf(file=paste0(path, "/TCI.pdf"), width=10, height=5)
   par(mfrow=c(1,1), oma=c(0,0,0,0) + 0.5, mar = c(1,1,1,1) + .5, mgp=c(1, 0.4, 0))
   if (ca$approach!="Frequency") {
     iter = dim(x)[2]
     if (iter==1) {
       if (is.null(lower)) {
-        lower = min(x)
+        lower = min(x[,1,ind])
       }
       if (is.null(upper)) {
-        upper = max(x)
+        upper = max(x[,1,ind])
       }
       plot(date, as.numeric(x[,1,ind]), type="l", main="", las=1, xlab="", ylab="", xaxs="i", yaxs="i", tck=-0.02, ylim=c(lower,upper))#, ...)
       grid(NA, NULL, lty=2)
       polygon(c(date,rev(date)),c(c(rep(0,t)),rev(x[,1,ind])),col=1, border=1)
     } else {
       if (is.null(lower)) {
-        lower = min(x)
+        lower = min(x[,,ind])
       }
       if (is.null(upper)) {
         upper = max(apply(x[,,ind],1,sum))

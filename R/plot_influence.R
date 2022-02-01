@@ -59,17 +59,17 @@ plot_influence = function(ca, save=FALSE, path='./Results', ylim=c(NULL, NULL), 
           if (is.null(upper)) {
             upper = max(x)
           }
-          plot(date, x_[,l], type="l", main=paste(NAMES[j],"-",NAMES[i]), las=1, xlab="", ylab="", xaxs="i", yaxs="i", tck=-0.02, ylim=c(lower,upper))#, ...)
+          plot(date, x_[,1], type="l", main=paste(NAMES[j],"-",NAMES[i]), las=1, xlab="", ylab="", xaxs="i", yaxs="i", tck=-0.02, ylim=c(lower,upper))#, ...)
           grid(NA, NULL, lty=2)
-          polygon(c(date,rev(date)),c(c(rep(0,t)),rev(x_[,l])),col=1, border=1)
+          polygon(c(date,rev(date)),c(c(rep(0,t)),rev(x_[,1])),col=1, border=1)
           for (l in ncol(x_):1) {
             polygon(c(date,rev(date)),c(c(rep(0,t)),rev(x_[,l])),col=l, border=l)
           }
-          legend("topleft", colnames(x_), fill=c(1:ncol(x_)), bty="n")
           for (l in 1:ncol(x_)) {
             lines(date, x_[,l],col=l)
           }
           abline(h=0, lty=3)
+          legend("topleft", colnames(x_), fill=c(1:ncol(x_)), bty="n")
           box()
         }
       }

@@ -67,11 +67,11 @@ plot_to = function(ca, save=FALSE, path='./Results', ylim=c(NULL, NULL), ...) {
       for (j in ncol(x_):1) {
         polygon(c(date,rev(date)),c(c(rep(0,t)),rev(x_[,j])),col=j+1, border=j+1)
       }
-      legend("topleft", c("total", colnames(x_)), fill=c(1:(ncol(x_)+1)), bty="n")
       for (j in 1:ncol(x_)) {
         lines(date, x_[,j],col=j+1)
       }
       abline(h=0, lty=3)
+      legend("topleft", c("total", colnames(x_)), fill=c(1:(ncol(x_)+1)), bty="n")
       box()
     }
   }

@@ -65,12 +65,12 @@ plot_npso = function(ca, save=FALSE, path='./Results', ylim=c(NULL, NULL), ...) 
           for (l in ncol(x_):1) {
             polygon(c(date,rev(date)),c(c(rep(0,t)),rev(x_[,l])),col=l+1, border=l+1)
           }
-          legend("topleft", c("total", colnames(x_)), fill=1:(ncol(x_)+1), bty="n")
           for (l in 1:ncol(x_)) {
             lines(date, x_[,l],col=l+1)
           }
           lines(date, apply(x_,1,sum), col=1)
           abline(h=0, lty=3)
+          legend("topleft", c("total", colnames(x_)), fill=1:(ncol(x_)+1), bty="n")
           box()
         }
       }
