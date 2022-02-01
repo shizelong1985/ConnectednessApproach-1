@@ -8,8 +8,10 @@
 #' @return Return connectedness plot
 #' @export
 plot_npso = function(ca, save=FALSE, path='./Results', ylim=c(NULL, NULL), ...) {
-  if (!dir.exists(path)) {
-    dir.create(path)
+  if (save) {
+    if (!dir.exists(path)) {
+      dir.create(path)
+    }
   }
   x = ca$NPSO
   if (is.null(x)) {

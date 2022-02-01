@@ -9,8 +9,10 @@
 #' @return Return connectedness plot
 #' @export
 plot_net = function(ca, save=FALSE, path='./Results', ylim=c(NULL, NULL), ...) {
-  if (!dir.exists(path)) {
-    dir.create(path)
+  if (save) {
+    if (!dir.exists(path)) {
+      dir.create(path)
+    }
   }
   x = ca$NET
   date = as.Date(rownames(x))

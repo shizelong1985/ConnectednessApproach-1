@@ -7,8 +7,10 @@
 #' @return Return connectedness plot
 #' @export
 plot_npdc = function(ca, save=FALSE, path='./Results', ...) {
-  if (!dir.exists(path)) {
-    dir.create(path)
+  if (save) {
+    if (!dir.exists(path)) {
+      dir.create(path)
+    }
   }
   x = ca$NPDC
   if (is.null(x)) {

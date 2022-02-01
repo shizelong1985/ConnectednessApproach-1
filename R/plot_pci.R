@@ -8,8 +8,10 @@
 #' @return Return connectedness plot
 #' @export
 plot_pci = function(ca, save=FALSE, path='./Results', ylim=c(NULL, NULL), ...) {
-  if (!dir.exists(path)) {
-    dir.create(path)
+  if (save) {
+    if (!dir.exists(path)) {
+      dir.create(path)
+    }
   }
   x = ca$PCI
   if (is.null(x)) {

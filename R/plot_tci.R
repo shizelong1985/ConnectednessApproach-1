@@ -12,8 +12,10 @@
 #' @import grDevices
 #' @export
 plot_tci = function(ca, save=FALSE, path='./Results', ylim=c(NULL, NULL), corrected=FALSE, ...) {
-  if (!dir.exists(path)) {
-    dir.create(path)
+  if (save) {
+    if (!dir.exists(path)) {
+      dir.create(path)
+    }
   }
   x = ca$TCI
   date = as.Date(rownames(x))

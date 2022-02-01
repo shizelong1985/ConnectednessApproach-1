@@ -8,8 +8,10 @@
 #' @return Return connectedness plot
 #' @export
 plot_influence = function(ca, save=FALSE, path='./Results', ylim=c(NULL, NULL), ...) {
-  if (!dir.exists(path)) {
-    dir.create(path)
+  if (save) {
+    if (!dir.exists(path)) {
+      dir.create(path)
+    }
   }
   x = ca$INFLUENCE
   if (is.null(x)) {

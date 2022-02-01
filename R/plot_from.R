@@ -8,8 +8,10 @@
 #' @return Return connectedness plot
 #' @export
 plot_from = function(ca, save=FALSE, path='./Results', ylim=c(NULL, NULL), ...) {
-  if (!dir.exists(path)) {
-    dir.create(path)
+  if (save) {
+    if (!dir.exists(path)) {
+      dir.create(path)
+    }
   }
   x = ca$FROM
   date = as.Date(rownames(x))
