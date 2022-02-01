@@ -56,10 +56,10 @@ plot_npso = function(ca, save=FALSE, path='./Results', ylim=c(NULL, NULL), ...) 
         if (i>j) {
           x_ = x[i,j,,]
           if (is.null(lower)) {
-            lower = min(c(min(x_), min(apply(x_,1,sum))))
+            lower = min(c(min(x), min(apply(x_,1,sum))))
           }
           if (is.null(upper)) {
-            upper = max(c(max(x_), max(apply(x_,1,sum))))
+            upper = max(c(max(x), max(apply(x_,1,sum))))
           }
           plot(date, apply(x_,1,sum), type="l", main=paste(NAMES[j],"-",NAMES[i]), las=1, xlab="", ylab="", xaxs="i", yaxs="i", tck=-0.02, ylim=c(lower,upper), ...)
           grid(NA, NULL, lty=2)
